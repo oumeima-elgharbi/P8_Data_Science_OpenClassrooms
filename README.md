@@ -95,6 +95,12 @@ $ C:\ProgramData\Anaconda3\python.exe -m pip install --upgrade --force-reinstall
 
 ## III) Dataset and image recognition
 
+**Source** : https://www.kaggle.com/datasets/moltean/fruits
+
+**Download dataset : https://s3.eu-west-1.amazonaws.com/course.oc-static.com/projects/Data_Scientist_P8/fruits.zip**
+
+OR Download dataset from Kaggle : https://www.kaggle.com/datasets/moltean/fruits/download?datasetVersionNumber=9
+
 ## IV) Spark
 
 ## V) AWS deployment
