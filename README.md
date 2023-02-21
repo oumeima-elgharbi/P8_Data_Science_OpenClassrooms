@@ -55,6 +55,8 @@ pip install jupyter notebook
 venv/Scripts/activate
 ````
 
+And configure DataSpell (if you use that IDE) to set the virtual environment.
+
 #### 3) Verification
 
 Check that you have (venv) in your terminal
