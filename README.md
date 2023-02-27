@@ -44,10 +44,11 @@ machine
 
 ````bash
 virtualenv --python C:\Users\oumei\AppData\Local\Programs\Python\Python310\python.exe venv
-venv\Scripts\activate.bat 
+source venv\Scripts\activate
 pip install -r requirements.txt
 pip install jupyter notebook
 ````
+it was : venv\Scripts\activate.bat but maybe missed the word "source"
 
 ##### ATTENTION : need to run to activate venv in Shell
 
