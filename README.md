@@ -9,8 +9,8 @@ This README contains information about :
 - I) Context
 - II) Virtual environment
 - III) Dataset and image recognition
-- IV) Spark
-- V) AWS deployment
+- IV) Local : Google Colab
+- V) Cloud : AWS deployment
 
 # ---------------------------------------------------------------------
 
@@ -102,6 +102,8 @@ $ C:\ProgramData\Anaconda3\python.exe -m pip install --upgrade --force-reinstall
 
 OR Download dataset from Kaggle : https://www.kaggle.com/datasets/moltean/fruits/download?datasetVersionNumber=9
 
-## IV) Spark
+## IV) Local : Google Colab
 
-## V) AWS deployment
+https://drive.google.com/drive/u/1/folders/1BRST8a8gaGcrAE4Oqv-pumCMkyWRw03g
+
+## V) Cloud : AWS deployment
