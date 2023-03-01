@@ -1,0 +1,9 @@
+[
+  {
+    "classification": "jupyter-s3-conf",
+    "properties": {
+      "s3.persistance.bucket": "oc-p8-data",
+      "s3.persistance.enabled": "true"
+    }
+  }
+]

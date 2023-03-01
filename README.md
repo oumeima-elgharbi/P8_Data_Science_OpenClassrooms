@@ -178,13 +178,95 @@ https://console.aws.amazon.com/s3/buckets/oc-p8-data?prefix=data/&region=eu-west
 
 ### 3) EMR (Elastic Map Reduce)
 
-1) Before creating an EMR cluster, we need an EC2 SSH key.
+#### Create cluster
+
+1) Create a cluster => Advanced options 
+- emr-6.9.0
+- JupyterHub 1.4.1
+- Tensorflow 2.10.0
+- Spark 3.3.0
+
+Add this configuration :
+[{"classification":"jupyter-s3-conf", "properties":{"s3.persistance.bucket":"oc-p8-data", "s3.persistance.enabled":"true"}}]
+
+[
+{
+"classification": "jupyter-s3-conf",
+"properties": {
+"s3.persistance.bucket": "oc-p8-data",
+"s3.persistance.enabled": "true"
+}
+}
+]
+
+1 master and 2 workers
+
+add bootstrap, upload file in S3 and : s3://oc-p8-data/bootstrap-emr.sh
+
+SSH Anywhere iPV4 et iPV6 et port 22
+
+** USe Firefox and add FoxyProxy 5555 and Socks5
+
+First Cluster : hadoop@ec2-34-241-89-35.eu-west-1.compute.amazonaws.com
+
+
+
+2) Before creating an EMR cluster, we need an EC2 SSH key.
 .pem key
 
-2) Choose eu regions in interface
+3) Choose eu regions in interface
 
-3) Then, create a cluster, and change "eu-west-1" for the logging folder s3://aws-logs-815565965465-eu-west-1/elasticmapreduce/
+4) Then, create a cluster, and change "eu-west-1" for the logging folder s3://aws-logs-815565965465-eu-west-1/elasticmapreduce/
 
 name : Cluster P8
 emr-5.33.0 OR last version 6.9
 use key name 
+
+4) Add an "AWS step"
+5) 
+
+
+#### Clone cluster from previous one
+create-cluster.sh + --stepset --auto-terminate options
+
+And add SSH for ec2-54-229-218-116.eu-west-1.compute.amazonaws.com
+
+
+#### Bootstrapping TODO rewrite
+
+Dans notre application du chapitre précédent qui analyse l'Iliade et l'Odyssée nous avons utilisé une dépendance externe
+sous la forme d'un package à installer avant d'exécuter notre application. 
+Nous avons également dû télécharger une liste de "stopwords" 
+
+````bash
+aws emr create-cluster \
+    ...
+    --bootstrap-action Path=s3://oc-calculsdistribues/bootstrap-emr.sh
+````
+
+#### Configure SSH client
+
+
+#### Add files in S3
+- add notebook
+- add bootstrap.sh
+
+
+#### Maintenance 
+
+- Spark Web UI
+1) create SSH tunnel TODO rewrite 
+````bash
+ssh -D 5555 hadoop@ec2-34-249-244-196.eu-west-1.compute.amazonaws.com
+````
+
+2) FoxyProxy
+- Add extension on Chrome or Firefox
+- Configure it with : chrome-extension://gcknhkkoolaabfmlnjonogaaifnjlfnp/options.html#tabProxies
+SOCKS proxy?
+- localhost
+- 5555
+
+- "Use proxy localhost:5555 for all URLs"
+- 
+3) http://MASTERNODEURL:PORT
