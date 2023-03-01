@@ -140,3 +140,7 @@ dmypy.json
 
 /Mode_opératoire/P8_Mode_opératoire/img/
 /dataset/
+/02_cloud_aws/ssh/
+/02_cloud_aws/data/
+/01_local_colab/data/
+/02_cloud_aws/ssh/
