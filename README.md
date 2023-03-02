@@ -7,8 +7,8 @@ Welcome to this repository.
 This README contains information about :
 
 - I) Context
-- II) Virtual environment
-- III) Dataset and image recognition
+- II) Dataset
+- III) Virtual environment
 - IV) Local : Google Colab
 - V) Cloud : AWS deployment
 
@@ -16,15 +16,36 @@ This README contains information about :
 
 ## I) Context
 
-https://www.kaggle.com/datasets/moltean/fruits
+This project is about deploying a Jupyter Notebook on the cloud. We have used AMS cloud solution with S3 and EMR.
 
-source dataset : https://www.kaggle.com/datasets/moltean/fruits/download?datasetVersionNumber=9
+First, we have prepared a notebook in **01_local_colab** using PySpark to preprocess fruits images using Transfert
+Learning and a PCA.
 
-## II) Virtual environment
+Secondly, after having finalised the **"local notebook"**, we have saved the dataset **Test** on an S3 bucket and we run
+the notebook on an EMR cluster.
+
+## II) Dataset
+
+The dataset contains 90380 images of 131 fruits and vegetables.
+
+We have used the dataset **Test** from "fruits-360_dataset/fruits-360/Test" that contains 22688 images for the notebook
+run on an EMR cluster.
+
+We have used a sample of 34 images saved in **Test1** to prepare the image preprocessing notebook on Google Colab.
+
+**Source** : https://www.kaggle.com/datasets/moltean/fruits
+
+**Download dataset : https://s3.eu-west-1.amazonaws.com/course.oc-static.com/projects/Data_Scientist_P8/fruits.zip**
+
+OR Download dataset from Kaggle : https://www.kaggle.com/datasets/moltean/fruits/download?datasetVersionNumber=9
+
+## III) Virtual environment
+
+We configurate a virtual environment to be able to use AWS CLI later even if the **local notebook** is run on Colab.
 
 ##### Requirements
 
-- Run pipreqs for front-end, back-end, model preparation to get a requirements.txt
+- Run pipreqs to get a requirements.txt
 
 ````bash
 pipreqs
@@ -35,7 +56,7 @@ pipreqs
 Download python 3.10.9 and install it : https://www.python.org/downloads/release/python-3109/ if not already on your
 machine
 
-##### 2) Installation steps !!!!!!
+##### 2) Installation steps
 
 - to get a virtual env run the following
 - to activate it (you get (venv) in the terminal : venv\Scripts\activate.bat ((or venv\Scripts\activate))
@@ -74,42 +95,46 @@ py -V
 python -V
 ````
 
-#### 4) Add runtime.txt (HERE ??)
-
-runtime.txt contains the python version, run like below to check the version
-
-````bash
-cat runtime.txt
-python -V
-````
-
 python -V to check which version of Python is being run locally
 
-#### 5) Some infos
-
-if you have packages problems with Streamlit :
-
-````bash
-$ C:\ProgramData\Anaconda3\python.exe -m pip install --upgrade --force-reinstall streamlit 
-````
+##### Information :
 
 --user won't work in virtual environment
 
-## III) Dataset and image recognition
-
-**Source** : https://www.kaggle.com/datasets/moltean/fruits
-
-**Download dataset : https://s3.eu-west-1.amazonaws.com/course.oc-static.com/projects/Data_Scientist_P8/fruits.zip**
-
-OR Download dataset from Kaggle : https://www.kaggle.com/datasets/moltean/fruits/download?datasetVersionNumber=9
-
 ## IV) Local : Google Colab
 
-https://drive.google.com/drive/u/1/folders/1BRST8a8gaGcrAE4Oqv-pumCMkyWRw03g
+First, we work locally : see folder **01_local_colab**.
+
+We have chosen to work on a Google Colab notebook because instead of installing a Virtual Machine (for Windows
+computers), Java and Spark, we can access Spark easily.
+
+We create a folder **data** in Google Drive in which we upload the dataset **Test1**.
+We save the notebook **P8_Notebook_Colab** in Google
+Drive : https://drive.google.com/drive/u/1/folders/1BRST8a8gaGcrAE4Oqv-pumCMkyWRw03g
+
+We install Spark and the other librairies in the notebook.
+
+After running the notebook, the results are saved in parquet format in a folder **Results1** in the folder **data**.
 
 ## V) Cloud : AWS deployment
 
-### 1) Prepare AWS Cli
+To deploy the notebook **P8_Notebook_AWS** from **02_cloud_aws**, we will use S3 for storage and EMR for cloud
+computing.
+
+First, we create a bucket called **oc-p8-data** in which we add a folder **data** that contains **Test1** and **Test**.
+
+Secondly, we configure and create an EMR cluster.
+
+After the creation of the cluster, we connect to it using an SSH tunnel and a Proxy (**FoxyProxy** on **Firefox**).
+
+Then, we can access **Jupyter Hub** and run our notebook that we upload on Jupyter Hub.
+
+The results from the preprocessing and PCA are saved in a folder **Results** (**Results1** for the sample dataset) in
+parquet format.
+
+**Results** is in **data** in the bucket **oc-p8-data**.
+
+### 0) Prepare AWS Cli
 
 In venv :
 
@@ -117,13 +142,14 @@ In venv :
 pip install awscli
 ````
 
-- Create an access key (ID and Key), region : eu-west-1, output (None or json)
+- Create an **access key (ID and Key)**
+- Use **access key (ID and Key)**, region : eu-west-1, output (None or json)
 
 ````bash
 aws configure
 ````
 
-### 2) S3 (Simple Storage Service)
+### 1) S3 (Simple Storage Service)
 
 - Nothing yet :
 
@@ -169,104 +195,107 @@ aws s3 ls s3://oc-p8-data/data/
 - To download data from the bucket, for instance Dates folder in our root "." :
 
 ````bash
-aws s3 cp s3://oc-p8-data/data/Test/Dates/ .
+aws s3 cp s3://oc-p8-data/data/Results/ .
 ````
 
 ##### Console : web interface for S3
 
 https://console.aws.amazon.com/s3/buckets/oc-p8-data?prefix=data/&region=eu-west-1
 
-### 3) EMR (Elastic Map Reduce)
+### 2) EMR (Elastic Map Reduce)
 
-#### Create cluster
+#### 2.1) Before creating the cluster
 
-1) Create a cluster => Advanced options 
-- emr-6.9.0
-- JupyterHub 1.4.1
-- Tensorflow 2.10.0
-- Spark 3.3.0
-
-Add this configuration :
-[{"classification":"jupyter-s3-conf", "properties":{"s3.persistance.bucket":"oc-p8-data", "s3.persistance.enabled":"true"}}]
-
-[
-{
-"classification": "jupyter-s3-conf",
-"properties": {
-"s3.persistance.bucket": "oc-p8-data",
-"s3.persistance.enabled": "true"
-}
-}
-]
-
-1 master and 2 workers
-
-add bootstrap, upload file in S3 and : s3://oc-p8-data/bootstrap-emr.sh
-
-SSH Anywhere iPV4 et iPV6 et port 22
-
-** USe Firefox and add FoxyProxy 5555 and Socks5
-
-First Cluster : hadoop@ec2-34-241-89-35.eu-west-1.compute.amazonaws.com
+- Upload these two files in S3 bucket **oc-p8-data**
+- add bootstrap.sh
+- add jupyter-s3-config.json for persistance (Jupyter Hub connected to S3 bucket)
 
 
+1) Bootstrap
+   To install the python packages when booting the cluster, create a file called **bootstrap-emr.sh** and add these
+   lines :
 
-2) Before creating an EMR cluster, we need an EC2 SSH key.
-.pem key
-
-3) Choose eu regions in interface
-
-4) Then, create a cluster, and change "eu-west-1" for the logging folder s3://aws-logs-815565965465-eu-west-1/elasticmapreduce/
-
-name : Cluster P8
-emr-5.33.0 OR last version 6.9
-use key name 
-
-4) Add an "AWS step"
-5) 
-
-
-#### Clone cluster from previous one
-create-cluster.sh + --stepset --auto-terminate options
-
-And add SSH for ec2-54-229-218-116.eu-west-1.compute.amazonaws.com
-
-
-#### Bootstrapping TODO rewrite
-
-Dans notre application du chapitre précédent qui analyse l'Iliade et l'Odyssée nous avons utilisé une dépendance externe
-sous la forme d'un package à installer avant d'exécuter notre application. 
-Nous avons également dû télécharger une liste de "stopwords" 
-
-````bash
-aws emr create-cluster \
-    ...
-    --bootstrap-action Path=s3://oc-calculsdistribues/bootstrap-emr.sh
+````shell
+sudo python3 -m pip install -U setuptools
+sudo python3 -m pip install -U pip
+sudo python3 -m pip install wheel
+sudo python3 -m pip install pillow
+sudo python3 -m pip install pandas==1.2.5
+sudo python3 -m pip install pyarrow
+sudo python3 -m pip install boto3
+sudo python3 -m pip install s3fs
+sudo python3 -m pip install fsspec
 ````
 
-#### Configure SSH client
+2) Configuration for persistance
+   Create a file called **jupyter-s3-conf.json** and add these lines :
+
+````json
+[
+  {
+    "classification": "jupyter-s3-conf",
+    "properties": {
+      "s3.persistance.bucket": "oc-p8-data",
+      "s3.persistance.enabled": "true"
+    }
+  }
+]
+````
+
+#### 2.2) Create cluster
+
+- Choose European region in web interface (example : eu-west-1)
+- Before creating an EMR cluster, we need an EC2 SSH key (RSA .ppk key saved in folder **ssh**)
+
+1) Create a cluster => Advanced options
+
+- emr-6.3.0
+- JupyterHub 1.2.0
+- Tensorflow 2.4.1
+- Spark 3.1.0
+
+2) Configure the cluster
+
+- name : P8_Fruits
+- use key_name (Key from EC2)
+- 1 master and 2 workers
+- TODO : add in Group Security : SSH Anywhere iPV4 et iPV6 and port 22
 
 
-#### Add files in S3
-- add notebook
-- add bootstrap.sh
+3) create SSH tunnel
 
+- Follow the steps from PuTTY on Windows (Host name / add .ppk file / create Tunnel port 5555)
+- we get the EMR message from a shell
 
-#### Maintenance 
+Not used here but for information :
 
-- Spark Web UI
-1) create SSH tunnel TODO rewrite 
 ````bash
 ssh -D 5555 hadoop@ec2-34-249-244-196.eu-west-1.compute.amazonaws.com
 ````
 
-2) FoxyProxy
-- Add extension on Chrome or Firefox
-- Configure it with : chrome-extension://gcknhkkoolaabfmlnjonogaaifnjlfnp/options.html#tabProxies
-SOCKS proxy?
-- localhost
-- 5555
+4) FoxyProxy
 
-- "Use proxy localhost:5555 for all URLs"
-- 
-3) http://MASTERNODEURL:PORT
+- Add Proxy extension on Firefox : FoxyProxy
+- Configure it with : (Proxy called 'EMR' / localhost / Port : 5555 / Socks5)
+- Active it only on EMR console
+
+5) Export cluster configuration
+   **create-cluster.sh** + --stepset --auto-terminate options
+
+6) Terminate the cluster when finished to avoid high bill.
+
+#### 2.3) Clone cluster from previous one
+
+1) Clone
+
+- We have saved the configuration of the previous cluster in **create-cluster.sh** that we got from "Export AMS Cli"
+- Either run **create-cluster.sh** in shell or click in **Clone cluster**.
+
+2) Add SSH Tunnel => we get the EMR shell message.
+   Example : ec2-54-229-218-116.eu-west-1.compute.amazonaws.com
+
+3) Activate the Proxy (click on the extension)
+
+#### 2.4) Maintenance
+
+- Spark Web UI
