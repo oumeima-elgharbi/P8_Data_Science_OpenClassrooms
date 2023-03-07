@@ -190,12 +190,10 @@ To check that the data were correctly uploaded :
 aws s3 ls s3://oc-p8-data/data/
 ````
 
-##### Other commands :
-
-- To download data from the bucket, for instance Dates folder in our root "." :
+- To download data from the bucket :
 
 ````bash
-aws s3 cp s3://oc-p8-data/data/Results/ .
+aws s3 sync s3://oc-p8-data/data/Results/ ./02_cloud_aws/data/Results
 ````
 
 ##### Console : web interface for S3
