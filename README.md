@@ -63,20 +63,41 @@ machine
 - to install the requirements with the right versions
 - to install Jupyter
 
+**Install virtualenv if you don't have it installed locally**
+
 ````bash
-virtualenv --python C:\Users\oumei\AppData\Local\Programs\Python\Python310\python.exe venv
-source venv\Scripts\activate
+pip install virtualenv
+````
+
+Then, for the first time run :
+
+````bash
+virtualenv --python C:\Users\athen\AppData\Local\Programs\Python\Python310\python.exe venv
+venv/Scripts/activate
+
 pip install -r requirements.txt
 pip install jupyter notebook
 ````
 
-it was : venv\Scripts\activate.bat but maybe missed the word "source"
+Or, if you already have your venv and just need to activate it :
+
+````bash
+source venv/Scripts/activate
+venv/Scripts/activate
+
+pip install -r requirements.txt
+pip install jupyter notebook
+````
+
+it was : venv\Scripts\activate.bat but maybe missed the word "source" depending on the computer ?
 
 ##### ATTENTION : need to run to activate venv in Shell
 
 ````bash
 venv/Scripts/activate
 ````
+
+**If the operation worked, you'll get (venv) that has appeared in your shell**
 
 And configure DataSpell (if you use that IDE) to set the virtual environment.
 
